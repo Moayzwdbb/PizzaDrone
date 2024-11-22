@@ -1,2 +1,4 @@
-package com.ilp.pizzadrone.service;public class FlightPathService {
+package com.ilp.pizzadrone.service;
+
+public class FlightPathService {
 }

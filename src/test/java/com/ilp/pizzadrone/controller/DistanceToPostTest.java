@@ -12,15 +12,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 /**
- * Test class for the PostController class.
  * This test verifies that the /distanceTo endpoint returns the correct distance
  * and 200 OK status when given valid data. Also invalid data (semantically and syntactically)
  * is tested to ensure the endpoint returns the 400 Bad Request status.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PostDistanceToTest {
+public class DistanceToPostTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,7 +30,7 @@ public class PostDistanceToTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testDistanceToValidData() throws Exception {
+    public void testDistanceToWithValidData() throws Exception {
         // Test /distanceTo endpoint with valid data
         mockMvc.perform(post("/distanceTo")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -41,101 +41,49 @@ public class PostDistanceToTest {
     }
 
     /**
-     * Test /distanceTo endpoint with valid data of same positions
+     * Test /distanceTo endpoint with semantic error data
      * @throws Exception if the test fails
      */
     @Test
-    public void testDistanceToSamePosition() throws Exception {
+    public void testDistanceToWithSemanticError() throws Exception {
             // Test /distanceTo endpoint with same positions
             mockMvc.perform(post("/distanceTo")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position1\": {\"lng\": -3.192473, \"lat\": 55.946233}," +
-                                  "\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("0.0"));
-
+                        .content("{\"position1\": {\"lng\": -300.192473, \"lat\": 550.946233}," +
+                                  "\"position2\": {\"lng\": -3202.192473, \"lat\": 5533.946233}}"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("Invalid Position Data: " +
+                            "Latitude or Longitude are missing or out of range"));
     }
 
     /**
-     * Test /distanceTo endpoint with invalid data (latitude out of range)
+     * Test /distanceTo endpoint with syntax error data
      * @throws Exception if the test fails
      */
     @Test
-    public void testDistanceToInvalidDataLatitudeOutOfRange() throws Exception {
-        // Test /distanceTo endpoint with invalid data (latitude out of range)
-        mockMvc.perform(post("/distanceTo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position1\": {\"lng\": -3.192473, \"lat\": 91.946233}," +
-                                  "\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    /**
-     * Test /distanceTo endpoint with invalid data (longitude out of range)
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testDistanceToInvalidDataLongitudeOutOfRange() throws Exception {
-        // Test /distanceTo endpoint with invalid data (longitude out of range)
-        mockMvc.perform(post("/distanceTo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position1\": {\"lng\": -181.192473, \"lat\": 55.946233}," +
-                                  "\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    /**
-     * Test /distanceTo endpoint with invalid data (missing position)
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testDistanceToInvalidDataMissingPosition1() throws Exception {
-        // Test /distanceTo endpoint with invalid data (missing position1)
-        mockMvc.perform(post("/distanceTo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    /**
-     * Test /distanceTo endpoint with invalid data (invalid string)
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testDistanceToInvalidDataStringInsteadOfNumber() throws Exception {
-        // Test /distanceTo endpoint with invalid data (string instead of number)
-        mockMvc.perform(post("/distanceTo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position1\": {\"lng\": -3.192473, \"lat\": \"invalid\"}," +
-                                  "\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    /**
-     * Test /distanceTo endpoint with invalid data (missing value)
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testDistanceToInvalidDataMissingValue() throws Exception {
-        // Test /distanceTo endpoint with invalid data (missing value)
-        mockMvc.perform(post("/distanceTo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position1\": {\"lng\": -3.192473}," +
-                                  "\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    /**
-     * Test /distanceTo endpoint with invalid data (null instead of number)
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testDistanceToInvalidDataNullInsteadOfNumber() throws Exception {
+    public void testDistanceToWithSyntaxError() throws Exception {
         // Test /distanceTo endpoint with invalid data (null instead of number)
         mockMvc.perform(post("/distanceTo")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position1\": {\"lng\": -3.192473, \"lat\": null}," +
-                                  "\"position2\": {\"lng\": -3.192473, \"lat\": 55.946233}}"))
-                .andExpect(status().isBadRequest());
+                        .content("{\"position1\": {\"lng\": -3.192473}," +
+                                  "\"position2\": {\"lng\": -3.192473, \"lat_Pos2\": 55.946233}}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid Position Data: " +
+                        "Latitude or Longitude are missing or out of range"));
+    }
+
+    /**
+     * Test /distanceTo endpoint with empty body
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testDistanceToWithEmptyBody() throws Exception {
+        // Test /distanceTo endpoint with empty body
+        mockMvc.perform(post("/distanceTo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid Position Data: " +
+                        "one or both positions are missing"));
     }
 }

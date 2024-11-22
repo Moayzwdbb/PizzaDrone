@@ -1,2 +1,4 @@
-package com.ilp.pizzadrone.constant;public class OrderStatus {
+package com.ilp.pizzadrone.constant;
+
+public class OrderStatus {
 }

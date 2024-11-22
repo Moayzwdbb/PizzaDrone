@@ -1,36 +1,13 @@
 package com.ilp.pizzadrone.dto;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class Region {
-    private String name;
-    private ArrayList<Position> vertices;
+/**
+ * defines a closed polygon with @vertices as the corner points. See <a href="https://en.wikipedia.org/wiki/Simple_polygon">simple polygon</a>.
+ * Usually it is used for defining no-fly zones. The vertices are given in counter-clockwise direction
+ * @param name is the name of the region
+ * @param vertices is the array of all vertices
+ */
+public record NamedRegion(String name, List<LngLat> vertices) {
 
-    /**
-     * @return name of the region
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name set name of the region
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return vertices of the region
-     */
-    public ArrayList<Position> getVertices() {
-        return vertices;
-    }
-
-    /**
-     * @param vertices set vertices of the region
-     */
-    public void setVertices(ArrayList<Position> vertices) {
-        this.vertices = vertices;
-    }
 }
