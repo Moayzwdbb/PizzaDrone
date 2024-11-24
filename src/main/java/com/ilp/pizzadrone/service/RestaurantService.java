@@ -19,8 +19,6 @@ public class RestaurantService {
 
     /**
      * Constructor for the RestaurantService
-     *
-     * @param restTemplate the REST template to use
      */
     public RestaurantService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -33,6 +31,7 @@ public class RestaurantService {
      */
     public List<Restaurant> fetchRestaurants() {
         Restaurant[] restaurants = restTemplate.getForObject(RESTAURANTS_URL, Restaurant[].class);
+        assert restaurants != null : "The fetched restaurants should not be null";
         return List.of(restaurants);
     }
 }

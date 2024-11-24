@@ -7,19 +7,29 @@ import com.ilp.pizzadrone.dto.CreditCardInformation;
 import com.ilp.pizzadrone.dto.Order;
 import com.ilp.pizzadrone.dto.Pizza;
 import com.ilp.pizzadrone.model.OrderValidation;
-import com.ilp.pizzadrone.util.OrderValidationUtil;
+import com.ilp.pizzadrone.validation.CreditCardValidator;
+import com.ilp.pizzadrone.validation.PizzaValidator;
+import com.ilp.pizzadrone.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
+import static com.ilp.pizzadrone.constant.SystemConstants.MAX_PIZZAS_PER_ORDER;
+
 @Service
 public class OrderService {
+    private final PizzaValidator pizzaValidator;
+    private final CreditCardValidator creditCardValidator;
+    private final RestaurantValidator restaurantValidator;
 
-    private final OrderValidationUtil orderValidationUtil;
+    public OrderService(PizzaValidator pizzaValidator,
+                        CreditCardValidator creditCardValidator,
+                        RestaurantValidator restaurantValidator) {
 
-    public OrderService(OrderValidationUtil orderValidationUtil) {
-        this.orderValidationUtil = orderValidationUtil;
+        this.pizzaValidator = pizzaValidator;
+        this.creditCardValidator = creditCardValidator;
+        this.restaurantValidator = restaurantValidator;
     }
 
     /**
@@ -56,17 +66,23 @@ public class OrderService {
         }
 
         // Check if max pizza count exceeded
-        if (pizzas.length > 4) {
+        if (pizzas.length > MAX_PIZZAS_PER_ORDER) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
         }
 
+        // Check if price of pizza is invalid or not defined
+        OrderValidationCode validationCode = pizzaValidator.isValidPizza(pizzas);
+        if (validationCode != OrderValidationCode.NO_ERROR) {
+            return new OrderValidation(OrderStatus.INVALID, validationCode);
+        }
+
         // Check if pizzas are from single restaurant
-        if (!orderValidationUtil.allPizzaFromSingleRestaurant(pizzas)) {
+        if (!restaurantValidator.allPizzaFromSingleRestaurant(pizzas)) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.PIZZA_FROM_MULTIPLE_RESTAURANTS);
         }
 
         // Check if total price is correct
-        if (!orderValidationUtil.isTotalPriceCorrect(pizzas, priceTotalInPence)) {
+        if (!pizzaValidator.isTotalPriceCorrect(pizzas, priceTotalInPence)) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.TOTAL_INCORRECT);
         }
 
@@ -76,7 +92,7 @@ public class OrderService {
         }
 
         // Check if credit card information is valid (invalid expiry date)
-        if (!orderValidationUtil.isValidExpiryDate(expiryDate)) {
+        if (!creditCardValidator.isValidExpiryDate(expiryDate)) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.EXPIRY_DATE_INVALID);
         }
 
@@ -87,14 +103,8 @@ public class OrderService {
 
         // Check if restaurant is closed on the order day
         DayOfWeek orderDayOfWeek = orderDate.getDayOfWeek();
-        if (!orderValidationUtil.isRestaurantOpen(pizzas, orderDayOfWeek)) {
+        if (!restaurantValidator.isRestaurantOpen(pizzas, orderDayOfWeek)) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.RESTAURANT_CLOSED);
-        }
-
-        // Check if price of pizza is invalid
-        OrderValidationCode validationCode = orderValidationUtil.isValidPizza(pizzas);
-        if (validationCode != OrderValidationCode.NO_ERROR) {
-            return new OrderValidation(OrderStatus.INVALID, validationCode);
         }
 
         // Return valid order result if passed all checks
