@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GetController {
+public class UuidGetController {
     /**
      * Return student id as a string
      * @return student id

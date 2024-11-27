@@ -1,9 +1,10 @@
 package com.ilp.pizzadrone.util;
 
 import com.ilp.pizzadrone.dto.Restaurant;
-import com.ilp.pizzadrone.service.RestaurantService;
+import com.ilp.pizzadrone.service.RetrieveAPIService;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,30 +12,31 @@ import java.util.List;
  * Includes methods for finding the restaurant from the order pizzas
  */
 @Component
-public class OrderValidationUtil {
+public class OrderValidationUtils {
     // Get restaurant list
-    private final RestaurantService restaurantService;
+    private final RetrieveAPIService retrieveAPIService;
 
     /**
      * Constructor for the order validation util class
      */
-    public OrderValidationUtil(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
+    public OrderValidationUtils(RetrieveAPIService retrieveAPIService) {
+        this.retrieveAPIService = retrieveAPIService;
     }
 
     /**
      * Finds the restaurant from the order pizzas in restaurant list.
      *
-     * @param restaurantNum the restaurant number
+     * @param menuName the name of the pizza
      * @return the restaurant from the order pizzas
      */
-    public Restaurant findOrderRestaurant(char restaurantNum) {
+    public Restaurant findOrderRestaurant(String menuName) {
         // Get restaurant list
-        List<Restaurant> restaurants = restaurantService.fetchRestaurants();
+        List<Restaurant> restaurants = retrieveAPIService.fetchRestaurants();
 
         // Find the matching restaurant
         return restaurants.stream()
-                .filter(restaurant -> restaurant.menu()[0].name().contains("R" + restaurantNum))
+                .filter(restaurant -> Arrays.stream(restaurant.menu())
+                        .anyMatch(menuItem -> menuItem.name().equals(menuName)))
                 .findFirst()
                 .orElse(null);
     }

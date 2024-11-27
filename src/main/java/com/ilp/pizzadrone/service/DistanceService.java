@@ -19,7 +19,11 @@ import static com.ilp.pizzadrone.constant.SystemConstants.DRONE_MOVE_DISTANCE;
  */
 @Service
 public class DistanceService {
-    // Calculate Euclidean distance between two positions
+    /**
+     * Calculate the Euclidean distance between two points
+     * @param request the request containing the two points
+     * @return the Euclidean distance between the two points
+     */
     public Double calcEuclidDist(LngLatPairRequest request) {
         Double position1Lng = request.position1().lng();
         Double position1Lat = request.position1().lat();
@@ -29,12 +33,25 @@ public class DistanceService {
         return Math.sqrt(Math.pow(position1Lng - position2Lng, 2) + Math.pow(position1Lat - position2Lat, 2));
     }
 
+    /**
+     * Check if two positions are close to each other
+     * @param request the request containing the two positions
+     * @return true if the two positions are close to each other, false otherwise
+     */
+    public boolean isCloseChecker(LngLatPairRequest request) {
+        return calcEuclidDist(request) < DRONE_MOVE_DISTANCE;
+    }
 
-    // Calculate next position given start position and angle
+
+    /**
+     * Calculate the next position of the drone
+     * @param request the request containing the current position and the angle
+     * @return the next position of the drone
+     */
     public LngLat calcNextPosition(NextPositionRequest request) {
         double startLng = request.start().lng();
         double startLat = request.start().lat();
-        CompassDirection direction = CompassDirection.fromAngle(request.angle());
+        CompassDirection direction = CompassDirection.getFlyDirection(request.angle());
 
         // Handle hovering
         if (direction == CompassDirection.HOVERING) {
@@ -52,7 +69,11 @@ public class DistanceService {
         return new LngLat(startLng + lngDistance, startLat + latDistance);
     }
 
-    // Check if position in request region
+    /**
+     * Check if a position is inside a region or on its boundary
+     * @param request the request containing the position and the region
+     * @return true if the position is inside the region or on its boundary, false otherwise
+     */
     public boolean isInRegionChecker(IsInRegionRequest request) {
         LngLat position = request.position();
         List<LngLat> vertices = request.region().vertices();

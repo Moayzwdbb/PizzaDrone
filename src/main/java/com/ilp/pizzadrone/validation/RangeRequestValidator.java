@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.ilp.pizzadrone.util.ValidationUtil.isInvalidPosition;
+import static com.ilp.pizzadrone.util.PositionValidationUtils.isInvalidPosition;
 
 
 /**

@@ -17,6 +17,9 @@ import java.time.LocalDate;
 
 import static com.ilp.pizzadrone.constant.SystemConstants.MAX_PIZZAS_PER_ORDER;
 
+/**
+ * Service class for validating an order
+ */
 @Service
 public class OrderService {
     private final PizzaValidator pizzaValidator;

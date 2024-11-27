@@ -7,7 +7,7 @@ import com.ilp.pizzadrone.dto.LngLat;
 /**
  * // Utility class for validation
  */
-public class ValidationUtil {
+public class PositionValidationUtils {
     // check if a position's coordinates are valid
     public static boolean isInvalidPosition(LngLat position) {
         return position.lng() == null || position.lat() == null ||
@@ -20,7 +20,7 @@ public class ValidationUtil {
     public static boolean isValidAngle(Double angle) {
         // Check if angle matches one of the CompassDirection angles
         try {
-            CompassDirection.fromAngle(angle);
+            CompassDirection.getFlyDirection(angle);
             return true;
         } catch (IllegalArgumentException e) {
             return false;

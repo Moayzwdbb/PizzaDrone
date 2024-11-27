@@ -3,7 +3,7 @@ package com.ilp.pizzadrone.validation;
 import com.ilp.pizzadrone.constant.OrderValidationCode;
 import com.ilp.pizzadrone.dto.Pizza;
 import com.ilp.pizzadrone.dto.Restaurant;
-import com.ilp.pizzadrone.util.OrderValidationUtil;
+import com.ilp.pizzadrone.util.OrderValidationUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -16,13 +16,13 @@ import static com.ilp.pizzadrone.constant.SystemConstants.ORDER_CHARGE_IN_PENCE;
  */
 @Component
 public class PizzaValidator {
-    private final OrderValidationUtil orderValidationUtil;
+    private final OrderValidationUtils orderValidationUtils;
 
     /**
      * Constructor for the pizza validator class
      */
-    public PizzaValidator(OrderValidationUtil orderValidationUtil) {
-        this.orderValidationUtil = orderValidationUtil;
+    public PizzaValidator(OrderValidationUtils orderValidationUtils) {
+        this.orderValidationUtils = orderValidationUtils;
     }
 
 
@@ -36,7 +36,7 @@ public class PizzaValidator {
     public OrderValidationCode isValidPizza(Pizza[] pizzas) {
         // For each piazza in order, find the matching restaurant
         for (Pizza pizza : pizzas) {
-            Restaurant OrderRestaurant = orderValidationUtil.findOrderRestaurant(pizza.name().charAt(1));
+            Restaurant OrderRestaurant = orderValidationUtils.findOrderRestaurant(pizza.name());
 
             // If restaurant not found, return false
             if (OrderRestaurant == null) {

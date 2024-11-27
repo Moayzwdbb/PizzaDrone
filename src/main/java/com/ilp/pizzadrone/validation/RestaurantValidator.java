@@ -2,7 +2,7 @@ package com.ilp.pizzadrone.validation;
 
 import com.ilp.pizzadrone.dto.Pizza;
 import com.ilp.pizzadrone.dto.Restaurant;
-import com.ilp.pizzadrone.util.OrderValidationUtil;
+import com.ilp.pizzadrone.util.OrderValidationUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -14,13 +14,13 @@ import java.util.Arrays;
  */
 @Component
 public class RestaurantValidator {
-    private final OrderValidationUtil orderValidationUtil;
+    private final OrderValidationUtils orderValidationUtils;
 
     /**
      * Constructor for the restaurant validator class
      */
-    public RestaurantValidator(OrderValidationUtil orderValidationUtil) {
-        this.orderValidationUtil = orderValidationUtil;
+    public RestaurantValidator(OrderValidationUtils orderValidationUtils) {
+        this.orderValidationUtils = orderValidationUtils;
     }
 
 
@@ -47,7 +47,7 @@ public class RestaurantValidator {
      */
     public boolean isRestaurantOpen(Pizza[] pizzas, DayOfWeek orderDay) {
         // Get restaurant list
-        Restaurant orderRestaurant = orderValidationUtil.findOrderRestaurant(pizzas[0].name().charAt(1));
+        Restaurant orderRestaurant = orderValidationUtils.findOrderRestaurant(pizzas[0].name());
 
         // If the restaurant is not found, return false
         if (orderRestaurant == null) return false;

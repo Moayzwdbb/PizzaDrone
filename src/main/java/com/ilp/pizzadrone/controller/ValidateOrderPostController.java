@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller class for handling POST requests related to order validation.
+ * This controller is responsible for handling the requests to validate an order.
  */
 @RestController
 public class ValidateOrderPostController {

@@ -4,8 +4,8 @@ import com.ilp.pizzadrone.model.NextPositionRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import static com.ilp.pizzadrone.util.ValidationUtil.isInvalidPosition;
-import static com.ilp.pizzadrone.util.ValidationUtil.isValidAngle;
+import static com.ilp.pizzadrone.util.PositionValidationUtils.isInvalidPosition;
+import static com.ilp.pizzadrone.util.PositionValidationUtils.isValidAngle;
 
 
 /**

@@ -4,7 +4,7 @@ import com.ilp.pizzadrone.model.LngLatPairRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import static com.ilp.pizzadrone.util.ValidationUtil.isInvalidPosition;
+import static com.ilp.pizzadrone.util.PositionValidationUtils.isInvalidPosition;
 
 /**
  * This class is used to validate the request.

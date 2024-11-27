@@ -13,31 +13,42 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.ilp.pizzadrone.constant.SystemConstants.DRONE_IS_CLOSE_DISTANCE;
-
 
 /**
  * Controller class for handling POST requests
  * related to distance, position and region.
  */
 @RestController
-public class PostController {
+public class DistancePostController {
     private final DistanceService distanceService;
     private final DistanceRequestValidator distanceRequestValidator;
     private final NextPosRequestValidator nextPosRequestValidator;
     private final RangeRequestValidator rangeRequestValidator;
 
-    public PostController(DistanceService distanceService,
-                          DistanceRequestValidator distanceRequestValidator,
-                          NextPosRequestValidator nextPosRequestValidator,
-                          RangeRequestValidator rangeRequestValidator) {
+    /**
+     * Constructor for PositionsPostController
+     *
+     * @param distanceService          Service for calculating distances
+     * @param distanceRequestValidator Validator for distance requests
+     * @param nextPosRequestValidator  Validator for next position requests
+     * @param rangeRequestValidator    Validator for region requests
+     */
+    public DistancePostController(DistanceService distanceService,
+                                  DistanceRequestValidator distanceRequestValidator,
+                                  NextPosRequestValidator nextPosRequestValidator,
+                                  RangeRequestValidator rangeRequestValidator) {
         this.distanceService = distanceService;
         this.distanceRequestValidator = distanceRequestValidator;
         this.nextPosRequestValidator = nextPosRequestValidator;
         this.rangeRequestValidator = rangeRequestValidator;
     }
 
-    // Return distance between two positions
+    /**
+     * Calculate the distance between two positions
+     *
+     * @param request Request containing two positions
+     * @return ResponseEntity containing the distance
+     */
     @PostMapping("/distanceTo")
     public ResponseEntity<?> distanceTo(@RequestBody LngLatPairRequest request) {
         // Validate the Positions
@@ -54,7 +65,12 @@ public class PostController {
         return ResponseEntity.ok(distance);
     }
 
-    // Checking if two positions are close
+    /**
+     * Check if two positions are close to each other
+     *
+     * @param request Request containing two positions
+     * @return ResponseEntity containing the result
+     */
     @PostMapping("/isCloseTo")
     public ResponseEntity<?> isCloseTo(@RequestBody LngLatPairRequest request) {
         // Validate the Positions
@@ -66,11 +82,16 @@ public class PostController {
         }
 
         // If positions are valid, determine is close
-        boolean isClose = distanceService.calcEuclidDist(request) < DRONE_IS_CLOSE_DISTANCE;
+        boolean isClose = distanceService.isCloseChecker(request);
         return ResponseEntity.ok(isClose);
     }
 
-    // Return next position
+    /**
+     * Calculate the next position based on the current position and angle
+     *
+     * @param request Request containing the current position and angle
+     * @return ResponseEntity containing the next position
+     */
     @PostMapping("/nextPosition")
     public ResponseEntity<?> nextPosition(@RequestBody NextPositionRequest request) {
         // Validate request
@@ -85,7 +106,12 @@ public class PostController {
         return ResponseEntity.ok(destination);
     }
 
-    // Return true if given position in the region
+    /**
+     * Check if a position is within a region
+     *
+     * @param request Request containing the position
+     * @return ResponseEntity containing the result
+     */
     @PostMapping("/isInRegion")
     public ResponseEntity<?> isInRegion(@RequestBody IsInRegionRequest request) {
         // Validate request

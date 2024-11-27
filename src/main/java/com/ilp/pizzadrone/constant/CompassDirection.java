@@ -1,6 +1,5 @@
 package com.ilp.pizzadrone.constant;
 
-
 /**
  * This enum class is used to store compass direction angles.
  * Drones can only fly in one of the 16 major compass,
@@ -29,28 +28,48 @@ public enum CompassDirection {
 
     private final double angle;
 
+    /**
+     * Constructor for the CompassDirection enum class
+     * @param angle the angle of the compass direction
+     */
     CompassDirection(double angle) {
         this.angle = angle;
     }
 
+    /**
+     * Get the angle of the compass direction
+     * @return the angle of the compass direction
+     */
     public double getAngle() {
         return angle;
     }
 
-
     /**
-     * Get CompassDirection by angle.
+     * Get Fly Direction by angle.
      * @param angle the angle to look up
      * @return CompassDirection corresponding to the angle
-     * @throws IllegalArgumentException if no matching direction is found
      */
-    public static CompassDirection fromAngle(double angle) {
-        for (CompassDirection direction : values()) {
-            if (Double.compare(direction.angle, angle) == 0) {
-                return direction;
+    public static CompassDirection getFlyDirection(double angle) {
+        angle = (angle + 360) % 360;
+        CompassDirection closestDirection = null;
+        double smallestDifference = Double.MAX_VALUE;
+
+        for (CompassDirection direction : CompassDirection.values()) {
+            if (direction == HOVERING) continue;
+
+            double difference = Math.abs(direction.getAngle() - angle);
+
+            if (difference > 180) {
+                difference = 360 - difference;
+            }
+
+            if (difference < smallestDifference) {
+                smallestDifference = difference;
+                closestDirection = direction;
             }
         }
-        throw new IllegalArgumentException("Invalid angle: " + angle);
+
+        return closestDirection;
     }
 
 }
