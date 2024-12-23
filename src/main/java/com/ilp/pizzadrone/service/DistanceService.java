@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.ilp.pizzadrone.constant.SystemConstants.DRONE_IS_CLOSE_DISTANCE;
 import static com.ilp.pizzadrone.constant.SystemConstants.DRONE_MOVE_DISTANCE;
 
 /**
@@ -39,7 +40,7 @@ public class DistanceService {
      * @return true if the two positions are close to each other, false otherwise
      */
     public boolean isCloseChecker(LngLatPairRequest request) {
-        return calcEuclidDist(request) < DRONE_MOVE_DISTANCE;
+        return calcEuclidDist(request) < DRONE_IS_CLOSE_DISTANCE;
     }
 
 

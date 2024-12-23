@@ -78,7 +78,8 @@ public class CalcPathUtils {
                         new NextPositionRequest(currentPosition, direction.getAngle()));
 
                 // Skip positions outside the central area if drone entered central area
-                if (insideCentralArea && !distanceService.isInRegionChecker(new IsInRegionRequest(nextPosition, centralArea))) {
+                if (insideCentralArea && !distanceService.isInRegionChecker(
+                        new IsInRegionRequest(nextPosition, centralArea))) {
                     continue;
                 }
 

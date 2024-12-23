@@ -50,10 +50,20 @@ public enum CompassDirection {
      * @return CompassDirection corresponding to the angle
      */
     public static CompassDirection getFlyDirection(double angle) {
-        angle = (angle + 360) % 360;
+        // Check if the angle is hovering
+        if (angle == 999) {
+            return HOVERING;
+        }
+
+        // Check if the angle is valid
+        if (angle > 360 || angle < 0) {
+            throw new IllegalArgumentException();
+        }
+
         CompassDirection closestDirection = null;
         double smallestDifference = Double.MAX_VALUE;
 
+        // Find the closest compass direction to the angle
         for (CompassDirection direction : CompassDirection.values()) {
             if (direction == HOVERING) continue;
 

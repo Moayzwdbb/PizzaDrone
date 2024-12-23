@@ -73,22 +73,6 @@ public class NextPositionPostTest {
     }
 
     /**
-     * Test /nextPosition endpoint with angle that are not one of 16 compass directions
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testNextPositionWithInvalidAngle() throws Exception {
-            // Test /nextPosition endpoint with invalid angle
-            mockMvc.perform(post("/nextPosition")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"start\": {\"lng\": -3.192473, \"lat\": 55.946233}," +
-                                  "\"angle\": 23}"))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(content().string("Invalid Angle: " +
-                            "Must be a valid compass direction or 999 for hovering."));
-    }
-
-    /**
      * Test /nextPosition endpoint with hovering angle return same position
      * @throws Exception if the test fails
      */

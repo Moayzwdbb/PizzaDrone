@@ -3,7 +3,7 @@ package com.ilp.pizzadrone.controller;
 import com.ilp.pizzadrone.dto.Order;
 import com.ilp.pizzadrone.model.OrderValidation;
 import com.ilp.pizzadrone.service.OrderService;
-import com.ilp.pizzadrone.service.TestOrderCasesService;
+import com.ilp.pizzadrone.service.RetrieveAPIService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +32,7 @@ public class ValidateOrderTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private TestOrderCasesService testOrderCasesService;
+    private RetrieveAPIService retrieveAPIService;
 
     @Autowired
     private OrderService orderService;
@@ -42,7 +42,7 @@ public class ValidateOrderTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithValidData() throws Exception {
+    public void testValidateOrder() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -64,7 +64,39 @@ public class ValidateOrderTest {
                                 "}}"
                                 ))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"orderStatus\": \"VALID\", \"orderValidationCode\": \"NO_ERROR\"}"));
+                .andExpect(content().json("{\"orderStatus\": \"VALID\"," +
+                        " \"orderValidationCode\": \"NO_ERROR\"}"));
+    }
+
+    /**
+     * Test /validateOrder endpoint return 200 OK status with invalid expiry date
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testInvalidateOrderWithInvalidExpiryData() throws Exception {
+        mockMvc.perform(post("/validateOrder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"orderNo\": \"26B2C04C\"," +
+                                "\"orderDate\": \"2024-11-23\"," +
+                                "\"orderStatus\": \"VALID\"," +
+                                "\"orderValidationCode\": \"NO_ERROR\", " +
+                                "\"priceTotalInPence\": 2500," +
+                                "\"pizzasInOrder\": [" + "{" +
+                                "\"name\": \"R1: Margarita\"," +
+                                "\"priceInPence\": 1000" +
+                                "}," + "{" +
+                                "\"name\": \"R1: Calzone\"," +
+                                "\"priceInPence\": 1400" +
+                                "}" + "]," +
+                                "\"creditCardInformation\": {" +
+                                "\"creditCardNumber\": \"4172767827650837\"," +
+                                "\"creditCardExpiry\": \"00/00\"," +
+                                "\"cvv\": \"989\"" +
+                                "}}"
+                        ))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"orderStatus\": \"INVALID\"," +
+                        " \"orderValidationCode\": \"EXPIRY_DATE_INVALID\"}"));
     }
 
     /**
@@ -72,7 +104,7 @@ public class ValidateOrderTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithEmptyBody() throws Exception {
+    public void testInvalidateOrderWithEmptyBody() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -86,7 +118,7 @@ public class ValidateOrderTest {
     @Test
     public void testValidateOrderWithOrderList() {
         // Fetch orders from the test service
-        List<Order> testOrders = testOrderCasesService.fetchOrders();
+        List<Order> testOrders = retrieveAPIService.fetchOrders();
 
         for (Order order : testOrders) {
             // Validate the order

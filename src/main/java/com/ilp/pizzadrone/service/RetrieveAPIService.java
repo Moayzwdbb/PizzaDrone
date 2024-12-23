@@ -2,6 +2,7 @@ package com.ilp.pizzadrone.service;
 
 
 import com.ilp.pizzadrone.dto.NamedRegion;
+import com.ilp.pizzadrone.dto.Order;
 import com.ilp.pizzadrone.dto.Restaurant;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +20,7 @@ public class RetrieveAPIService {
     private static final String RESTAURANTS_URL = "https://ilp-rest-2024.azurewebsites.net/restaurants";
     private static final String NO_FLY_ZONES_URL = "https://ilp-rest-2024.azurewebsites.net/noFlyZones";
     private static final String CENTRAL_AREA_URL = "https://ilp-rest-2024.azurewebsites.net/centralArea";
+    private static final String ORDERS_URL = "https://ilp-rest-2024.azurewebsites.net/orders";
     private final RestTemplate restTemplate;
 
     /**
@@ -59,5 +61,11 @@ public class RetrieveAPIService {
         NamedRegion centralArea = restTemplate.getForObject(CENTRAL_AREA_URL, NamedRegion.class);
         assert centralArea != null : "The fetched central area should not be null";
         return centralArea;
+    }
+
+    public List<Order> fetchOrders() {
+        Order[] orders = restTemplate.getForObject(ORDERS_URL, Order[].class);
+        assert orders != null : "The fetched orders should not be null";
+        return List.of(orders);
     }
 }

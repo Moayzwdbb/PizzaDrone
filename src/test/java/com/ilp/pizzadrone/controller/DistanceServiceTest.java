@@ -1,10 +1,11 @@
-package com.ilp.pizzadrone.service;
+package com.ilp.pizzadrone.controller;
 
 import com.ilp.pizzadrone.dto.LngLat;
 import com.ilp.pizzadrone.dto.NamedRegion;
 import com.ilp.pizzadrone.model.IsInRegionRequest;
 import com.ilp.pizzadrone.model.LngLatPairRequest;
 import com.ilp.pizzadrone.model.NextPositionRequest;
+import com.ilp.pizzadrone.service.DistanceService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

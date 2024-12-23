@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Configuration class for the application
+ * Contains the bean definition for the REST template, which is used to make REST API calls
  */
 @Configuration
 public class AppConfig {

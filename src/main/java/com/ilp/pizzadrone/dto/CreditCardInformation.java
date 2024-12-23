@@ -1,5 +1,8 @@
 package com.ilp.pizzadrone.dto;
 
+/**
+ * Represents the credit card information for an order
+ */
 public class CreditCardInformation {
     /**
      * the credit card number - we consider 16 digit MASTERCARD and VISA
