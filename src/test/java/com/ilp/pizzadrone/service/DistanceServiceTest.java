@@ -1,11 +1,10 @@
-package com.ilp.pizzadrone.controller;
+package com.ilp.pizzadrone.service;
 
 import com.ilp.pizzadrone.dto.LngLat;
 import com.ilp.pizzadrone.dto.NamedRegion;
 import com.ilp.pizzadrone.model.IsInRegionRequest;
 import com.ilp.pizzadrone.model.LngLatPairRequest;
 import com.ilp.pizzadrone.model.NextPositionRequest;
-import com.ilp.pizzadrone.service.DistanceService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -115,8 +114,6 @@ public class DistanceServiceTest {
                 new LngLat(-3.184319, 55.942617),
                 new LngLat(-3.184319, 55.946233)
         ));
-
-
 
         IsInRegionRequest request = new IsInRegionRequest(position, namedRegion);
 

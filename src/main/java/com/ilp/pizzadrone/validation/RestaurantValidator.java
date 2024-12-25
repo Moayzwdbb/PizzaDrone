@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Utility class for validating restaurants
@@ -31,11 +33,21 @@ public class RestaurantValidator {
      * @return True if all pizzas are from the same restaurant, false otherwise
      */
     public boolean allPizzaFromSingleRestaurant(Pizza[] pizzas) {
-        // Get first order's restaurant number
-        char restaurantNum = pizzas[0].name().charAt(1);
+        // Use a Set to store restaurant name in order
+        Set<Restaurant> uniqueRestaurants = new HashSet<>();
 
-        // Check if all orders are from the same restaurant
-        return Arrays.stream(pizzas).allMatch(pizza -> pizza.name().charAt(1) == restaurantNum);
+        for (Pizza pizza : pizzas) {
+            // Find the restaurant from the order pizzas
+            Restaurant orderRestaurant = orderValidationUtils.findOrderRestaurant(pizza.name());
+
+            // If the restaurant is not found, return false
+            if (orderRestaurant == null) return false;
+
+            uniqueRestaurants.add(orderRestaurant);
+        }
+
+        // If there is only one unique restaurant, all pizzas are from the same restaurant
+        return uniqueRestaurants.size() == 1;
     }
 
     /**

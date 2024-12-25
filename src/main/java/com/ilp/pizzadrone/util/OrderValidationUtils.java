@@ -15,6 +15,7 @@ import java.util.List;
 public class OrderValidationUtils {
     // Get restaurant list
     private final RetrieveAPIService retrieveAPIService;
+    private List<Restaurant> cachedRestaurants;
 
     /**
      * Constructor for the order validation util class
@@ -30,8 +31,13 @@ public class OrderValidationUtils {
      * @return the restaurant from the order pizzas
      */
     public Restaurant findOrderRestaurant(String menuName) {
-        // Get restaurant list
-        List<Restaurant> restaurants = retrieveAPIService.fetchRestaurants();
+        // Get restaurant list with caching
+        List<Restaurant> restaurants = getRestaurants();
+
+        // Validate the restaurant list
+        if (restaurants == null || restaurants.isEmpty()) {
+            throw new IllegalStateException("Restaurant list is unavailable");
+        }
 
         // Find the matching restaurant
         return restaurants.stream()
@@ -39,5 +45,17 @@ public class OrderValidationUtils {
                         .anyMatch(menuItem -> menuItem.name().equals(menuName)))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Retrieves the cached restaurant list or fetches it if not available.
+     *
+     * @return the list of restaurants
+     */
+    private List<Restaurant> getRestaurants() {
+        if (cachedRestaurants == null) {
+            cachedRestaurants = retrieveAPIService.fetchRestaurants();
+        }
+        return cachedRestaurants;
     }
 }

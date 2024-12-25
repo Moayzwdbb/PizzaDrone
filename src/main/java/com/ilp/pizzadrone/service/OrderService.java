@@ -100,7 +100,7 @@ public class OrderService {
         }
 
         // Check if credit card information is valid (invalid CVV)
-        if (cvv.length() != 3) {
+        if (!cvv.matches("\\d{3}")) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.CVV_INVALID);
         }
 
