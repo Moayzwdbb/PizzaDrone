@@ -5,6 +5,7 @@ import com.ilp.pizzadrone.dto.LngLat;
 import com.ilp.pizzadrone.dto.Order;
 import com.ilp.pizzadrone.service.CalcDeliveryPathService;
 import com.ilp.pizzadrone.service.OrderService;
+import com.ilp.pizzadrone.validation.OrderValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,14 +21,17 @@ import java.util.List;
 public class CalcDeliveryPathController {
     private final CalcDeliveryPathService calcDeliveryPathService;
     private final OrderService orderService;
+    private final OrderValidator orderValidator;
 
     /**
      * Constructor for the CalcDeliveryPathController
      */
     public CalcDeliveryPathController(CalcDeliveryPathService calcDeliveryPathService,
-                                      OrderService orderService) {
+                                      OrderService orderService,
+                                      OrderValidator orderValidator) {
         this.calcDeliveryPathService = calcDeliveryPathService;
         this.orderService = orderService;
+        this.orderValidator = orderValidator;
     }
 
     /**
@@ -39,6 +43,14 @@ public class CalcDeliveryPathController {
     @PostMapping("/calcDeliveryPath")
     public ResponseEntity<?> calcDeliveryPath(@RequestBody Order order) {
         // Validate the order
+        ResponseEntity<?> validationResponse = orderValidator.validateOrderRequest(order);
+
+        // Return bad request if validation fails
+        if (validationResponse != null) {
+            return validationResponse;
+        }
+
+        // Get the validation result
         OrderStatus validationResult = orderService.validateOrder(order).orderStatus();
 
         // Return bad request if validation fails

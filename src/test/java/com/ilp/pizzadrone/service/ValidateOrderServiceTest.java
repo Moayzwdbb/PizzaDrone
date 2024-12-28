@@ -30,7 +30,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrder() throws Exception {
+    public void testValidOrder() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -68,7 +68,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithEmptyPizza() throws Exception {
+    public void testValidOrderWithEmptyPizza() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -93,7 +93,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithExceededPizza() throws Exception {
+    public void testValidOrderWithExceededPizza() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -137,7 +137,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithNotDefinedPizza() throws Exception {
+    public void testValidOrderWithNotDefinedPizza() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -169,7 +169,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithInvalidPrice() throws Exception {
+    public void testValidOrderWithInvalidPrice() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -201,7 +201,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testInvalidateOrderWithInvalidExpiryData() throws Exception {
+    public void testValidOrderWithInvalidExpiryData() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -233,7 +233,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testInvalidateOrderWithUndefinedPizza() throws Exception {
+    public void testValidOrderWithUndefinedPizza() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -265,7 +265,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithTotalIncorrect() throws Exception {
+    public void testValidOrderWithTotalIncorrect() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -297,7 +297,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithIncorrectCVV() throws Exception {
+    public void testValidOrderWithIncorrectCVV() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -329,7 +329,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithIncorrectCardNumber() throws Exception {
+    public void testValidOrderWithIncorrectCardNumber() throws Exception {
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderNo\": \"26B2C04C\"," +
@@ -361,7 +361,7 @@ public class ValidateOrderServiceTest {
      * @throws Exception if the test fails
      */
     @Test
-    public void testValidateOrderWithClosedDay() throws Exception {
+    public void testValidOrderWithClosedDay() throws Exception {
         // Closed day is Wednesday and Thursday in R1
         mockMvc.perform(post("/validateOrder")
                         .contentType(MediaType.APPLICATION_JSON)

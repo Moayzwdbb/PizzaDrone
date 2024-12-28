@@ -16,8 +16,8 @@ public class OrderValidator {
                 order.getPriceTotalInPence() <= 0 ||
                 order.getPizzasInOrder() == null ||
                 order.getCreditCardInformation() == null) {
-            return ResponseEntity.badRequest().body("Invalid Order Data: " +
-                    "Order is invalid");
+            return ResponseEntity.badRequest().body("Invalid Order: " +
+                    "Order data is invalid");
         }
 
         // return null if validations are pass

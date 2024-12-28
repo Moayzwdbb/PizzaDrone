@@ -32,7 +32,7 @@ public class ValidateOrderPostTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Order Data: Order is invalid"));
+                .andExpect(content().string("Invalid Order: Order data is invalid"));
     }
 
     /**
@@ -53,7 +53,7 @@ public class ValidateOrderPostTest {
                                 "]" +
                                 "}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Order Data: Order is invalid"));
+                .andExpect(content().string("Invalid Order: Order data is invalid"));
     }
 
     /**
@@ -78,7 +78,7 @@ public class ValidateOrderPostTest {
                                 "\"cvv\": \"989\"" +
                                 "}}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Order Data: Order is invalid"));
+                .andExpect(content().string("Invalid Order: Order data is invalid"));
     }
 
     /**
@@ -113,6 +113,6 @@ public class ValidateOrderPostTest {
                                 "\"cvv\": \"989\"" +
                                 "}}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Order Data: Order is invalid"));
+                .andExpect(content().string("Invalid Order: Order data is invalid"));
     }
 }

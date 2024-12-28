@@ -74,27 +74,4 @@ public class Node implements Comparable<Node> {
         return Double.compare(this.f, other.f);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Node other = (Node) obj;
-        return position.equals(other.position);
-    }
-
-    @Override
-    public int hashCode() {
-        return position.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" +
-                "position=" + position +
-                ", g=" + g +
-                ", h=" + h +
-                ", f=" + f +
-                ", parent=" + (parent != null ? parent.position() : "null") +
-                '}';
-    }
 }

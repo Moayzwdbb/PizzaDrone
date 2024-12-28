@@ -20,6 +20,10 @@ import static com.ilp.pizzadrone.constant.SystemConstants.CENTRAL_REGION_NAME;
 public class GeoJsonService {
     private final RetrieveAPIService retrieveAPIService;
 
+    private List<Restaurant> restaurants;
+    private NamedRegion centralArea;
+    private List<NamedRegion> noFlyZones;
+
 
     /**
      * Constructor for the GeoJsonService class
@@ -39,85 +43,96 @@ public class GeoJsonService {
      * @return a map representing the GeoJSON structure
      */
     public String convertToGeoJson(List<LngLat> flightPath) {
-        // Fetch the data from the API
-        List<Restaurant> restaurants = retrieveAPIService.fetchRestaurants();
-        NamedRegion centralArea = retrieveAPIService.fetchCentralArea();
-        List<NamedRegion> noFlyZones = retrieveAPIService.fetchNoFlyZones();
+        // Fetch and cache the data from the API
+        if (restaurants == null) {
+            restaurants = retrieveAPIService.fetchRestaurants();
+        }
+        if (centralArea == null) {
+            centralArea = retrieveAPIService.fetchCentralArea();
+        }
+        if (noFlyZones == null) {
+            noFlyZones = retrieveAPIService.fetchNoFlyZones();
+        }
 
         // Create features list
         List<Feature> features = new ArrayList<>();
 
-        // Create flight path line string
-        List<Point> flyPathPoints = new ArrayList<>();
+        // Add flight path feature
+        features.add(createFlightPathFeature(flightPath));
 
-        for (LngLat point : flightPath) {
-            flyPathPoints.add(Point.fromLngLat(point.lng(), point.lat()));
-        }
+        // Add Appleton Tower feature
+        features.add(createFeatureFromPoint(Point.fromLngLat(APPLETON_LNG, APPLETON_LAT),
+                "Appleton Tower", "#ffff00"));
 
-        LineString flyPathLineString = LineString.fromLngLats(flyPathPoints);
-        Feature flyPathFeature = Feature.fromGeometry(flyPathLineString);
-        flyPathFeature.addStringProperty("name", "Flight Path");
-        flyPathFeature.addStringProperty("color", "#ff0000");
-        features.add(flyPathFeature);
+        // Add central area feature
+        features.add(convertVerticesToPolygon(centralArea, CENTRAL_REGION_NAME, "none"));
 
-
-        // Create Appleton Tower feature
-        Point appletonTowerPoint = Point.fromLngLat(APPLETON_LNG, APPLETON_LAT);
-        Feature appletonTowerFeature = Feature.fromGeometry(appletonTowerPoint);
-        appletonTowerFeature.addStringProperty("name", "Appleton Tower");
-        appletonTowerFeature.addStringProperty("marker-symbol", "building");
-        appletonTowerFeature.addStringProperty("marker-color", "#ffff00");
-
-        features.add(appletonTowerFeature);
-
-        // Create central area feature
-        List<List<Point>> centralAreaCoordinates = new ArrayList<>();
-        List<Point> centralAreaPoints = new ArrayList<>();
-
-        for (LngLat vertex : centralArea.vertices()) {
-            centralAreaPoints.add(Point.fromLngLat(vertex.lng(), vertex.lat()));
-        }
-        centralAreaCoordinates.add(centralAreaPoints);
-
-        Polygon centralAreaPolygon = Polygon.fromLngLats(centralAreaCoordinates);
-        Feature centralAreaFeature = Feature.fromGeometry(centralAreaPolygon);
-        centralAreaFeature.addStringProperty("name", CENTRAL_REGION_NAME);
-        centralAreaFeature.addStringProperty("fill", "none");
-
-        features.add(centralAreaFeature);
-
-        // Create restaurant features
+        // Add restaurant features
         for (Restaurant restaurant : restaurants) {
-            Point restaurantPoint = Point.fromLngLat(restaurant.location().lng(), restaurant.location().lat());
-            Feature restaurantFeature = Feature.fromGeometry(restaurantPoint);
-            restaurantFeature.addStringProperty("name", restaurant.name());
-            restaurantFeature.addStringProperty("marker-color", "#0000ff");
-            restaurantFeature.addStringProperty("marker-symbol", "building");
-            features.add(restaurantFeature);
+            features.add(createFeatureFromPoint(Point.fromLngLat(restaurant.location().lng(), restaurant.location().lat()),
+                    restaurant.name(), "#0000ff"));
         }
 
-        // Create no-fly zone features
+        // Add no-fly zone features
         for (NamedRegion noFlyZone : noFlyZones) {
-            List<List<Point>> noFlyZoneCoordinates = new ArrayList<>();
-            List<Point> noFlyZonePoints = new ArrayList<>();
-
-            for (LngLat vertex : noFlyZone.vertices()) {
-                noFlyZonePoints.add(Point.fromLngLat(vertex.lng(), vertex.lat()));
-            }
-
-            noFlyZoneCoordinates.add(noFlyZonePoints);
-
-            Polygon noFlyZonePolygon = Polygon.fromLngLats(noFlyZoneCoordinates);
-            Feature noFlyZoneFeature = Feature.fromGeometry(noFlyZonePolygon);
-            noFlyZoneFeature.addStringProperty("name", noFlyZone.name());
-            noFlyZoneFeature.addStringProperty("fill", "#ff0000");
-            features.add(noFlyZoneFeature);
+            features.add(convertVerticesToPolygon(noFlyZone, noFlyZone.name(), "#ff0000"));
         }
 
         // Create FeatureCollection
-        FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
+        return FeatureCollection.fromFeatures(features).toJson();
+    }
 
-        // Convert the FeatureCollection to JSON
-        return featureCollection.toJson();
+    /**
+     * Create a feature from a list of LngLat points representing the flight path
+     * @param flightPath the flight path as a list of LngLat
+     * @return the feature representing the flight path
+     */
+    private Feature createFlightPathFeature(List<LngLat> flightPath) {
+        List<Point> points = new ArrayList<>();
+        for (LngLat point : flightPath) {
+            points.add(Point.fromLngLat(point.lng(), point.lat()));
+        }
+        LineString lineString = LineString.fromLngLats(points);
+        Feature feature = Feature.fromGeometry(lineString);
+        feature.addStringProperty("name", "Flight Path");
+        feature.addStringProperty("color", "#ff0000");
+        return feature;
+    }
+
+    /**
+     * Convert a NamedRegion object to a GeoJSON polygon feature
+     * @param region the NamedRegion object
+     * @param name the name of the feature
+     * @param fillColor the fill color of the feature
+     * @return the GeoJSON polygon feature
+     */
+    private Feature convertVerticesToPolygon(NamedRegion region, String name, String fillColor) {
+        List<List<Point>> coordinates = new ArrayList<>();
+        List<Point> points = new ArrayList<>();
+        for (LngLat vertex : region.vertices()) {
+            points.add(Point.fromLngLat(vertex.lng(), vertex.lat()));
+        }
+        coordinates.add(points);
+        Polygon polygon = Polygon.fromLngLats(coordinates);
+        Feature feature = Feature.fromGeometry(polygon);
+        feature.addStringProperty("name", name);
+        feature.addStringProperty("fill", fillColor);
+        return feature;
+    }
+
+    /**
+     * Create a feature from a Point object
+     *
+     * @param point       the Point object
+     * @param name        the name of the feature
+     * @param markerColor the marker color
+     * @return the GeoJSON feature
+     */
+    private Feature createFeatureFromPoint(Point point, String name, String markerColor) {
+        Feature feature = Feature.fromGeometry(point);
+        feature.addStringProperty("name", name);
+        feature.addStringProperty("marker-color", markerColor);
+        feature.addStringProperty("marker-symbol", "building");
+        return feature;
     }
 }

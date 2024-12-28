@@ -26,6 +26,11 @@ public final class SystemConstants {
     public static final double DRONE_IS_CLOSE_DISTANCE = 0.00015;
 
     /**
+     * the maximum moves a drone can make before running out of battery
+     */
+    public static final int DRONE_MAX_MOVES = 2000;
+
+    /**
      * the central region name
      */
     public static final String CENTRAL_REGION_NAME = "central";
