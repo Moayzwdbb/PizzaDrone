@@ -95,7 +95,7 @@ public class OrderService {
         }
 
         // Check if credit card information is valid (invalid expiry date)
-        if (!creditCardValidator.isValidExpiryDate(expiryDate)) {
+        if (!creditCardValidator.isValidExpiryDate(expiryDate, orderDate)) {
             return new OrderValidation(OrderStatus.INVALID, OrderValidationCode.EXPIRY_DATE_INVALID);
         }
 

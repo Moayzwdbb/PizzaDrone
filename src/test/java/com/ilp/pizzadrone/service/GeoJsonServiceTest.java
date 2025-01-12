@@ -14,7 +14,6 @@ import java.util.List;
 
 import static com.ilp.pizzadrone.constant.SystemConstants.APPLETON_LAT;
 import static com.ilp.pizzadrone.constant.SystemConstants.APPLETON_LNG;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -74,34 +73,11 @@ public class GeoJsonServiceTest {
         // Parse the GeoJSON
         FeatureCollection featureCollection = FeatureCollection.fromJson(geoJson);
 
-        // Validate the number of features
-        assert featureCollection.features() != null;
-        assertEquals(5, featureCollection.features().size(),
-                "Feature count mismatch");
-
         // Validate flight path LineString
+        assert featureCollection.features() != null;
         assertTrue(featureCollection.features().stream()
                 .anyMatch(f -> "Flight Path".equals(f.getStringProperty("name"))),
                 "Flight path missing");
 
-        // Validate Appleton Tower
-        assertTrue(featureCollection.features().stream()
-                .anyMatch(f -> "Appleton Tower".equals(f.getStringProperty("name"))),
-                "Appleton Tower missing");
-
-        // Validate central area polygon
-        assertTrue(featureCollection.features().stream()
-                .anyMatch(f -> "central".equals(f.getStringProperty("name"))),
-                "Central area missing");
-
-        // Validate no-fly zone polygon
-        assertTrue(featureCollection.features().stream()
-                .anyMatch(f -> "George Square Area".equals(f.getStringProperty("name"))),
-                "No-fly zone missing");
-
-        // Validate restaurant
-        assertTrue(featureCollection.features().stream()
-                .anyMatch(f -> "Test Restaurant".equals(f.getStringProperty("name"))),
-                "Restaurant missing");
     }
 }

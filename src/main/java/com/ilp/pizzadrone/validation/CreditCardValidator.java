@@ -16,7 +16,7 @@ public class CreditCardValidator {
      * @param expiryDate the credit card expiry date
      * @return True if the credit card expiry date is valid, false otherwise
      */
-    public boolean isValidExpiryDate(String expiryDate) {
+    public boolean isValidExpiryDate(String expiryDate, LocalDate orderDate) {
         // Expiry date should be in MM/YY format
         if (!expiryDate.matches("\\d{2}/\\d{2}")) {
             return false;
@@ -32,6 +32,6 @@ public class CreditCardValidator {
 
         // Check if the expiry date is in the future
         LocalDate expiry = LocalDate.of(year, month, 1).withDayOfMonth(1).plusMonths(1);
-        return expiry.isAfter(LocalDate.now());
+        return expiry.isAfter(orderDate);
     }
 }

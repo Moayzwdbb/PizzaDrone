@@ -68,7 +68,7 @@ public class CalcPathUtils {
 
             // If the drone reached Appleton Tower, stop searching
             if (distanceService.isCloseChecker(new LngLatPairRequest(currentPosition, appletonTowerLocation))) {
-                goalNode = new Node(appletonTowerLocation, currentNode.g(), 0, currentNode);
+                goalNode = new Node(currentPosition, currentNode.g(), 0, currentNode);
                 break;
             }
 

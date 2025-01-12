@@ -2,6 +2,7 @@ package com.ilp.pizzadrone.service;
 
 import com.ilp.pizzadrone.dto.*;
 import com.ilp.pizzadrone.model.IsInRegionRequest;
+import com.ilp.pizzadrone.model.LngLatPairRequest;
 import com.ilp.pizzadrone.util.CalcPathUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +71,9 @@ public class CalcPathServiceTest {
         // Check if the fly path starts at the restaurant
         assertEquals(restaurantLocation, flyPath.getFirst());
 
-        // Check if the fly path ends at Appleton Tower
-        assertEquals(appletonTowerLocation, flyPath.getLast());
+        // Check if the last position of fly path close to Appleton Tower
+        assertTrue(distanceService.isCloseChecker(new LngLatPairRequest(flyPath.getLast(), appletonTowerLocation)),
+                "Last position of the path should be close to Appleton Tower");
 
         // Check if the fly path has more than the maximum number of moves
         assertTrue(flyPath.size() <= DRONE_MAX_MOVES, "Path exceeds the maximum allowed moves");
