@@ -2,8 +2,6 @@
 
 PizzaDrone is a Spring Boot service for the ILP-style drone pizza delivery scenario. It provides endpoints for order validation and delivery path calculation (including GeoJSON output), and includes a test suite covering controller and service behaviours.
 
-This repository also contains evidence of software testing practices such as automated CI and instrumentation via application logging.
-
 ## Tech Stack
 
 - Java 21 (recommended)
