@@ -20,6 +20,8 @@ To facilitate white-box testing and debugging, the following mechanisms were imp
 ### 2.1 Instrumentation
 * **Logging (SLF4J):** Implemented targeted `INFO` and `WARN` logging in `OrderService` (see `src/main/.../OrderService.java`) to trace specific validation failure reasons (e.g., `CVV_INVALID` vs `CARD_NUMBER_INVALID`) during testing. This allows distinguishing between different failure reasons.
 
+![Screenshot of test logs](img/test_log.png)
+
 ### 2.2 Scaffolding
 * **Mocks (Mockito):** Created mock objects for `RestTemplate` to isolate the system under test from the unstable external ILP API and simulate "dirty data" scenarios (e.g., closed restaurants).
 * **Test Drivers (MockMvc):** Used `MockMvc` to simulate HTTP requests (POST/GET) and assert response bodies.
