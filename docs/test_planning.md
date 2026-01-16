@@ -1,4 +1,4 @@
-# Test Plan & Strategy
+# Testing Planning
 
 ## 1. Risk Analysis & Prioritisation
 
